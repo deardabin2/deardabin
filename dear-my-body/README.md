@@ -133,13 +133,15 @@ app/
   (client)/today              오늘 기록 (자동 저장)
   (client)/history            기록 달력
   (client)/goals              목표 설정
-  (client)/trends, library    Phase 2·3 에서 구현 (지금은 준비 중 화면)
+  (client)/trends             추이 그래프 (2주/4주/전체)
+  (client)/library            Phase 3 에서 구현 (지금은 준비 중 화면)
   auth/confirm                가입 확인 메일 링크 처리
   onboarding/consent          건강정보(민감정보) 별도 동의
 components/ui                 버튼·입력 등 기본 컴포넌트 (shadcn/ui 형식)
 components/features           화면별 기능 컴포넌트
 lib/supabase                  브라우저·서버·proxy 용 Supabase 클라이언트
 lib/validations               zod 스키마
+lib/trends.ts                 이동평균·달성률 계산 (단위 테스트 있음)
 supabase/migrations           DB 스키마 + RLS + Storage 정책
 supabase/tests/rls_check.sql  RLS 검증 스크립트
 types/database.types.ts       Supabase CLI 로 생성한 타입
@@ -158,3 +160,11 @@ proxy.ts                      세션 갱신 + 비로그인 접근 시 로그인 
 - **영양 정보 확장**: 칼로리/영양소 계산은 만들지 않았습니다. 나중에 붙일 때는 `meals` 에 컬럼을 추가하거나,
   `meal_nutrition (meal_id 1:1)` 같은 별도 테이블을 두는 방식으로 확장할 수 있습니다.
 - **사진 경로**: `meal-photos/{user_id}/{날짜}/{끼니}-{uuid}.jpg`. 첫 폴더가 본인 id 인 파일만 다룰 수 있고, 화면에는 1시간짜리 서명 URL 로만 보여 줍니다.
+
+## 추이 계산 기준 (`lib/trends.ts`)
+
+- **7일 이동평균**: 그날을 포함한 직전 7일(달력 기준) 안에 잰 체중의 평균. 그 7일 안에 기록이 3개 미만이면 그날 평균은 비워 둡니다 (`MA_MIN_POINTS`).
+- **이동평균 표시 조건**: 선택한 기간에 체중을 잰 날이 7일 미만이면 평균선 대신 안내 문구를 보여 줍니다 (`MIN_WEIGHT_DAYS_FOR_TREND`).
+- **시작 대비 변화**: 목표 시작일(목표가 없으면 첫 기록일) 이후 첫 7일 평균과 가장 최근 7일 평균의 차이. 기간 필터와 관계없이 같은 기준입니다.
+- **달성률**: 체크형은 체크한 날, 숫자형은 하루 목표치 이상인 날을 '지킨 날'로 봅니다. 분모는 그 행동 목표가 대상이었던 날 전체(기록하지 않은 날 포함)입니다. 행동 목표를 만든 날(그 전에 체크한 날이 있으면 그날)부터, 목록에서 뺀 날까지가 대상입니다.
+- **주 단위**: 월요일 시작. 이번 주 기록 일수도 월요일부터 셉니다.

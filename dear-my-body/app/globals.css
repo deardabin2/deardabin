@@ -25,6 +25,9 @@
   --border: oklch(0.89 0.02 85);
   --input: oklch(0.87 0.02 85);
   --ring: oklch(0.55 0.08 155);
+  /* 그래프: 주 계열과 흐린 보조 계열 (dataviz 검증 통과 값) */
+  --chart-main: oklch(0.52 0.11 155);
+  --chart-soft: oklch(0.7 0.11 155);
 }
 
 .dark {
@@ -46,6 +49,8 @@
   --border: oklch(0.34 0.015 150);
   --input: oklch(0.38 0.015 150);
   --ring: oklch(0.7 0.09 155);
+  --chart-main: oklch(0.665 0.12 155);
+  --chart-soft: oklch(0.49 0.1 155);
 }
 
 @theme inline {
@@ -69,6 +74,8 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-chart-main: var(--chart-main);
+  --color-chart-soft: var(--chart-soft);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
