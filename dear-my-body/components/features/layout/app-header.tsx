@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, LogOut } from "lucide-react";
-import { signOut } from "@/app/(auth)/actions";
+import { LayoutDashboard, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -20,11 +19,11 @@ export function AppHeader({ isCoach = false, homeHref = "/today" }: { isCoach?: 
             </Button>
           ) : null}
           <ThemeToggle />
-          <form action={signOut}>
-            <Button type="submit" variant="ghost" size="icon" aria-label="로그아웃">
-              <LogOut aria-hidden />
-            </Button>
-          </form>
+          <Button asChild variant="ghost" size="icon">
+            <Link href="/settings" aria-label="설정">
+              <Settings aria-hidden />
+            </Link>
+          </Button>
         </div>
       </div>
     </header>

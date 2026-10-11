@@ -37,6 +37,7 @@ npm run dev                  # http://localhost:3000
 2. `supabase/migrations/` 안의 파일을 **이름 순서대로** 하나씩 통째로 붙여넣고 Run
    - `20261011000000_init_schema.sql` (기본 스키마)
    - `20261012000000_coach_and_content.sql` (코치 코멘트, 콘텐츠 이미지 버킷)
+   - `20261013000000_account_deletion.sql` (본인 계정 삭제 함수)
 
 **방법 B. CLI로**
 ```bash
@@ -124,7 +125,19 @@ npx supabase link --project-ref <프로젝트 ref>   # 처음 한 번
 npm run db:types
 ```
 
-## 8. 배포 (Vercel)
+## 8. 홈 화면 앱(PWA)
+
+`app/manifest.ts` 와 아이콘(`public/icons/`, `app/icon.png`, `app/apple-icon.png`)이 들어 있어, HTTPS 로 배포하면 휴대폰에서 '홈 화면에 추가'로 앱처럼 쓸 수 있습니다.
+건강정보가 기기에 캐시로 남지 않도록 오프라인 캐시(서비스 워커)는 넣지 않았습니다. 설치 방법 안내는 앱의 **설정** 화면에 있습니다.
+
+## 9. 계정 설정 (`/settings`)
+
+- 이름 바꾸기, 로그아웃
+- 내 데이터 CSV 내보내기: 일일 기록(날짜당 한 줄, 끼니·행동 목표·코치 코멘트 포함), 목표. 엑셀에서 한글이 깨지지 않도록 UTF-8 BOM 을 붙이고, 수식 실행을 막기 위해 `=`,`+`,`-`,`@` 로 시작하는 글 앞에 `'` 를 붙입니다.
+- 건강정보 동의 철회: 동의서 문구(보유 기간 "동의 철회 시까지")에 맞춰 목표·일일 기록·식사 사진을 지우고 동의를 해제합니다. 계정은 남습니다.
+- 계정 삭제: 식사 사진을 먼저 지운 뒤 `delete_my_account()` DB 함수로 계정과 모든 기록을 지웁니다. service role 키 없이 로그인한 본인 계정만 지울 수 있습니다.
+
+## 10. 배포 (Vercel)
 
 1. Vercel 에서 이 GitHub 저장소를 Import
 2. **Root Directory 를 `dear-my-body` 로 지정** (중요)

@@ -62,7 +62,7 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
       </Button>
       <p className="text-center text-sm text-muted-foreground">
         아직 계정이 없으신가요?{" "}
-        <Link href="/signup" className="inline-flex min-h-11 items-center font-medium text-primary underline-offset-4 hover:underline">
+        <Link href="/signup" className="inline-flex min-h-11 min-w-11 items-center justify-center px-1 font-medium text-primary underline-offset-4 hover:underline">
           회원가입
         </Link>
       </p>

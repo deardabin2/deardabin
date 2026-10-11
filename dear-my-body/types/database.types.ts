@@ -492,6 +492,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      delete_my_account: { Args: Record<PropertyKey, never>; Returns: undefined };
       has_health_consent: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_coach: { Args: Record<PropertyKey, never>; Returns: boolean };
     };

@@ -106,7 +106,7 @@ export function SignupForm() {
       </Button>
       <p className="text-center text-sm text-muted-foreground">
         이미 계정이 있으신가요?{" "}
-        <Link href="/login" className="inline-flex min-h-11 items-center font-medium text-primary underline-offset-4 hover:underline">
+        <Link href="/login" className="inline-flex min-h-11 min-w-11 items-center justify-center px-1 font-medium text-primary underline-offset-4 hover:underline">
           로그인
         </Link>
       </p>

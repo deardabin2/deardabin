@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { giveHealthConsent } from "@/app/onboarding/actions";
 import { signOut } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
@@ -54,8 +55,11 @@ export function ConsentForm() {
             괜찮아요. 동의하지 않으면 기록 기능은 쓸 수 없지만, 마음이 바뀌면 언제든 이 화면에서
             동의할 수 있어요.
           </p>
+          <Button asChild variant="outline" className="w-full">
+            <Link href="/library">라이브러리 둘러보기</Link>
+          </Button>
           <form action={signOut}>
-            <Button type="submit" variant="outline" className="w-full">
+            <Button type="submit" variant="ghost" className="w-full">
               로그아웃
             </Button>
           </form>

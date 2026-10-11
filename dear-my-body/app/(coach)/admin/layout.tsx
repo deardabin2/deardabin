@@ -12,7 +12,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     <div className="min-h-dvh">
       <AppHeader homeHref="/admin" />
       <AdminNav />
-      <main className="mx-auto w-full max-w-3xl px-4 py-5 pb-16">{children}</main>
+      <main id="main" tabIndex={-1} className="outline-none mx-auto w-full max-w-3xl px-4 py-5 pb-16">{children}</main>
     </div>
   );
 }

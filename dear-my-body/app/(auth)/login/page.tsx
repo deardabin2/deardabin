@@ -10,6 +10,8 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const notice =
     params.error === "confirm"
       ? "확인 링크가 만료됐거나 이미 사용됐어요. 로그인해 보시고, 안 되면 다시 가입해 주세요."
-      : undefined;
+      : params.deleted
+        ? "계정과 데이터를 모두 지웠어요. 그동안 함께해 주셔서 고마워요."
+        : undefined;
   return <LoginForm next={next} notice={notice} />;
 }

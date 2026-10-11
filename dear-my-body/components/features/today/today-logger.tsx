@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { formatKoreanDate } from "@/lib/date";
 import { MEAL_TYPES, type DailyLogPatch, type MealType } from "@/lib/validations/daily-log";
 import { CoachComments } from "@/components/features/coach-comments";
 import { BehaviorChecklist } from "./behavior-checklist";
@@ -113,6 +114,7 @@ export function TodayLogger({ data }: { data: TodayData }) {
 
   return (
     <div className="flex flex-col gap-4">
+      <h1 className="sr-only">{logDate === today ? "오늘 기록" : `${formatKoreanDate(logDate)} 기록`}</h1>
       <DateNav logDate={logDate} today={today} />
       <div className="-mt-2 flex items-center justify-between">
         <SaveStatusBadge status={status} onRetry={retry} />

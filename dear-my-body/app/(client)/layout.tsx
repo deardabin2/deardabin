@@ -9,7 +9,7 @@ export default async function ClientLayout({ children }: { children: ReactNode }
   return (
     <div className="min-h-dvh">
       <AppHeader isCoach={profile.role === "coach"} />
-      <main className="mx-auto w-full max-w-md px-4 pt-4 pb-[calc(5rem+env(safe-area-inset-bottom))]">
+      <main id="main" tabIndex={-1} className="outline-none mx-auto w-full max-w-md px-4 pt-4 pb-[calc(5rem+env(safe-area-inset-bottom))]">
         {children}
       </main>
       <BottomNav />

@@ -11,7 +11,7 @@ export default async function ConsentPage() {
   if (hasValidConsent(profile)) redirect("/");
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-5 py-10">
+    <main id="main" tabIndex={-1} className="outline-none mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-5 py-10">
       <div>
         <p className="text-sm font-medium text-primary">
           {profile.display_name ? `${profile.display_name}님, 반가워요` : "반가워요"}

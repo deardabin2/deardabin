@@ -285,6 +285,38 @@ end $$;
 
 reset role;
 
+-- anon 은 계정 삭제 함수를 부를 수 없어야 한다
+select set_config('request.jwt.claims', '{"role":"anon"}', true);
+set local role anon;
+do $$
+begin
+  perform public.delete_my_account();
+  raise exception 'RLS 검증 실패: anon 이 계정 삭제 함수를 부름';
+exception when insufficient_privilege then null;
+end $$;
+reset role;
+
+-------------------------------------------------------------------------------
+-- 계정 삭제: A 가 자기 계정을 지우면 A 의 데이터만 사라져야 한다
+-------------------------------------------------------------------------------
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000a","role":"authenticated"}', true);
+set local role authenticated;
+select public.delete_my_account();
+reset role;
+
+do $$
+begin
+  if exists (select 1 from auth.users where id = '00000000-0000-4000-a000-00000000000a') then
+    raise exception 'RLS 검증 실패: 계정이 지워지지 않음';
+  end if;
+  if exists (select 1 from public.daily_logs where user_id = '00000000-0000-4000-a000-00000000000a') then
+    raise exception 'RLS 검증 실패: 지운 계정의 기록이 남음';
+  end if;
+  if not exists (select 1 from public.daily_logs where user_id = '00000000-0000-4000-a000-00000000000b') then
+    raise exception 'RLS 검증 실패: 다른 사람 기록까지 지워짐';
+  end if;
+end $$;
+
 select 'RLS 검증 통과' as result;
 
 rollback;

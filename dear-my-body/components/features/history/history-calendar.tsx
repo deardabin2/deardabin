@@ -72,14 +72,13 @@ export function HistoryCalendar({
           const isFuture = date > today;
           const has = recorded.has(date);
           const isToday = date === today;
-          const label = `${monthNumber}월 ${day}일${has ? ", 기록 있음" : ""}${isToday ? ", 오늘" : ""}`;
 
           if (isFuture) {
             return (
               <div
                 key={date}
                 aria-hidden
-                className="flex aspect-square min-h-11 items-center justify-center rounded-lg text-sm text-muted-foreground/50"
+                className="flex aspect-square min-h-11 items-center justify-center rounded-lg text-sm text-muted-foreground"
               >
                 {day}
               </div>
@@ -89,14 +88,20 @@ export function HistoryCalendar({
             <Link
               key={date}
               href={dayHref(date)}
-              aria-label={label}
               className={cn(
                 "flex aspect-square min-h-11 flex-col items-center justify-center gap-0.5 rounded-lg text-sm transition-colors",
                 has ? "bg-accent font-medium text-accent-foreground" : "hover:bg-muted",
                 isToday && "ring-2 ring-primary",
               )}
             >
-              {day}
+              <span>
+                <span className="sr-only">{monthNumber}월 </span>
+                {day}
+                <span className="sr-only">
+                  일{has ? ", 기록 있음" : ""}
+                  {isToday ? ", 오늘" : ""}
+                </span>
+              </span>
               <span
                 aria-hidden
                 className={cn("size-1.5 rounded-full", has ? "bg-primary" : "bg-transparent")}

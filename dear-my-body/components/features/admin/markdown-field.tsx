@@ -44,7 +44,7 @@ export function MarkdownField({
               aria-selected={mode === key}
               onClick={() => setMode(key)}
               className={cn(
-                "min-h-9 rounded-md px-3",
+                "min-h-11 rounded-md px-3",
                 mode === key ? "bg-card font-semibold shadow-xs" : "text-muted-foreground",
               )}
             >

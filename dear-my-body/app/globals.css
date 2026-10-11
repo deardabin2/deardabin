@@ -24,7 +24,8 @@
   /* 시스템 오류 안내용 차분한 갈색 (달성 여부 표시에는 쓰지 않음) */
   --destructive: oklch(0.5 0.08 60);
   --border: oklch(0.89 0.02 85);
-  --input: oklch(0.87 0.02 85);
+  /* 입력칸 테두리는 배경 대비 3:1 이상 (WCAG 1.4.11) */
+  --input: oklch(0.63 0.02 85);
   --ring: oklch(0.55 0.08 155);
   /* 그래프: 주 계열과 흐린 보조 계열 (dataviz 검증 통과 값) */
   --chart-main: oklch(0.52 0.11 155);
@@ -48,7 +49,7 @@
   --accent-foreground: oklch(0.93 0.012 85);
   --destructive: oklch(0.75 0.08 65);
   --border: oklch(0.34 0.015 150);
-  --input: oklch(0.38 0.015 150);
+  --input: oklch(0.55 0.015 150);
   --ring: oklch(0.7 0.09 155);
   --chart-main: oklch(0.665 0.12 155);
   --chart-soft: oklch(0.49 0.1 155);
@@ -93,5 +94,16 @@
   body {
     @apply bg-background text-foreground antialiased;
     word-break: keep-all;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
