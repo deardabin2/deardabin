@@ -42,10 +42,10 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (isLoggedIn && (pathname === "/login" || pathname === "/signup")) {
-    const todayUrl = request.nextUrl.clone();
-    todayUrl.pathname = "/today";
-    todayUrl.search = "";
-    return redirectWithCookies(todayUrl, response);
+    const homeUrl = request.nextUrl.clone();
+    homeUrl.pathname = "/";
+    homeUrl.search = "";
+    return redirectWithCookies(homeUrl, response);
   }
 
   return response;

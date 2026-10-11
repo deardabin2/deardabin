@@ -81,9 +81,9 @@ describe("hasAnyRecord", () => {
 describe("safeNextPath", () => {
   it("내부 경로만 허용한다", () => {
     expect(safeNextPath("/goals")).toBe("/goals");
-    expect(safeNextPath("//evil.com")).toBe("/today");
-    expect(safeNextPath("https://evil.com")).toBe("/today");
-    expect(safeNextPath("/\\evil.com")).toBe("/today");
-    expect(safeNextPath(undefined)).toBe("/today");
+    expect(safeNextPath("//evil.com")).toBe("/");
+    expect(safeNextPath("https://evil.com")).toBe("/");
+    expect(safeNextPath("/\\evil.com")).toBe("/");
+    expect(safeNextPath(undefined)).toBe("/");
   });
 });

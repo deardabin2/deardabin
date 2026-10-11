@@ -18,19 +18,28 @@ const SMALL_CHARTS = [
 
 const dash = (v: number | null, digits = 1) => (v === null ? "–" : formatNumber(v, digits));
 
-export function TrendsView({ data }: { data: TrendsData }) {
+export function TrendsView({
+  data,
+  basePath,
+  title = "추이",
+}: {
+  data: TrendsData;
+  /** 기간 필터 링크의 경로 (고객: /trends, 코치: /admin/clients/[id]/trends) */
+  basePath: string;
+  title?: string;
+}) {
   const { summary } = data;
   const weightRows = data.daily.filter((d) => d.weight !== null || d.ma !== null);
 
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">추이</h1>
+        <h1 className="text-xl font-semibold">{title}</h1>
         <nav aria-label="기간" className="flex rounded-lg bg-secondary p-1">
           {TREND_RANGES.map((r) => (
             <Link
               key={r}
-              href={r === "2w" ? "/trends" : `/trends?range=${r}`}
+              href={r === "2w" ? basePath : `${basePath}?range=${r}`}
               aria-current={data.range === r ? "page" : undefined}
               className={cn(
                 "flex min-h-11 min-w-14 items-center justify-center rounded-md px-3 text-sm transition-colors",
@@ -70,7 +79,7 @@ export function TrendsView({ data }: { data: TrendsData }) {
               ? `${TREND_RANGE_LABELS[data.range]} 동안 ${formatPercent(summary.bestGoal.rate)} 지켰어요`
               : data.hasBehaviorGoals
                 ? "체크가 쌓이면 보여 드려요"
-                : "목표 화면에서 행동 목표를 정해 보세요"
+                : "아직 행동 목표가 없어요"
           }
         />
       </section>
@@ -135,9 +144,11 @@ export function TrendsView({ data }: { data: TrendsData }) {
           {!data.hasBehaviorGoals ? (
             <ChartEmpty>
               아직 행동 목표가 없어요.{" "}
-              <Link href="/goals" className="font-medium text-primary underline-offset-4 hover:underline">
-                목표 정하러 가기
-              </Link>
+              {basePath === "/trends" ? (
+                <Link href="/goals" className="font-medium text-primary underline-offset-4 hover:underline">
+                  목표 정하러 가기
+                </Link>
+              ) : null}
             </ChartEmpty>
           ) : (
             <>

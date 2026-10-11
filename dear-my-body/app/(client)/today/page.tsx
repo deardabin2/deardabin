@@ -24,7 +24,9 @@ export default async function TodayPage({ searchParams }: PageProps<"/today">) {
   const [{ data: log }, { data: goal }] = await Promise.all([
     supabase
       .from("daily_logs")
-      .select("*, meals(*), behavior_checks(behavior_goal_id, value)")
+      .select(
+        "*, meals(*), behavior_checks(behavior_goal_id, value), coach_comments(id, body, created_at, coach:profiles(display_name))",
+      )
       .eq("user_id", profile.id)
       .eq("log_date", logDate)
       .maybeSingle(),
@@ -97,6 +99,9 @@ export default async function TodayPage({ searchParams }: PageProps<"/today">) {
     },
     meals,
     checks,
+    coachComments: (log?.coach_comments ?? [])
+      .sort((a, b) => a.created_at.localeCompare(b.created_at))
+      .map((c) => ({ id: c.id, body: c.body, createdAt: c.created_at, coachName: c.coach?.display_name ?? null })),
     behaviorGoals: [...activeBehaviorGoals, ...(pastBehaviorGoals ?? [])].map((b) => ({
       id: b.id,
       title: b.title,

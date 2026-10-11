@@ -1,3 +1,4 @@
+import type { CoachCommentItem } from "@/components/features/coach-comments";
 import type { MealType } from "@/lib/validations/daily-log";
 
 export type MealState = {
@@ -38,6 +39,7 @@ export type TodayData = {
   behaviorGoals: BehaviorGoalItem[];
   checks: Record<string, number>;
   hasActiveGoal: boolean;
+  coachComments: CoachCommentItem[];
 };
 
 export const MEAL_LABELS: Record<MealType, string> = {

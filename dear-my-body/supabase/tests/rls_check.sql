@@ -88,8 +88,8 @@ begin
   if (select count(*) from public.behavior_goals) <> 0 then
     raise exception 'RLS 검증 실패: B가 A의 behavior_goals 를 봄';
   end if;
-  if (select count(*) from public.profiles) <> 1 then
-    raise exception 'RLS 검증 실패: B가 다른 사람 프로필을 봄';
+  if (select count(*) from public.profiles where role = 'client') <> 1 then
+    raise exception 'RLS 검증 실패: B가 다른 고객 프로필을 봄';
   end if;
   if (select count(*) from storage.objects where bucket_id = 'meal-photos') <> 0 then
     raise exception 'RLS 검증 실패: B가 A의 식사 사진을 봄';
@@ -204,6 +204,67 @@ begin
   get diagnostics n = row_count;
   if n <> 0 then
     raise exception 'RLS 검증 실패: 코치가 고객 기록을 수정함';
+  end if;
+end $$;
+
+-- 코치는 자기 이름으로 코멘트를 남길 수 있다
+insert into public.coach_comments (daily_log_id, coach_id, body)
+values ('30000000-0000-4000-a000-00000000000a', '00000000-0000-4000-a000-00000000000d', '잘하고 계세요');
+
+-- 다른 사람 이름으로는 코멘트를 쓸 수 없다
+do $$
+begin
+  insert into public.coach_comments (daily_log_id, coach_id, body)
+  values ('30000000-0000-4000-a000-00000000000a', '00000000-0000-4000-a000-00000000000a', '사칭');
+  raise exception 'RLS 검증 실패: 코치가 다른 사람 이름으로 코멘트를 씀';
+exception when insufficient_privilege then null;
+end $$;
+
+-- 코치는 콘텐츠 이미지를 올릴 수 있다
+insert into storage.objects (bucket_id, name) values ('content-images', 'ingredients/sample.jpg');
+
+reset role;
+
+-------------------------------------------------------------------------------
+-- 코멘트: 기록의 주인 A 는 볼 수 있고, B 는 볼 수 없고, 고객은 쓸 수 없어야 한다
+-------------------------------------------------------------------------------
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000a","role":"authenticated"}', true);
+set local role authenticated;
+
+do $$
+begin
+  if (select count(*) from public.coach_comments) <> 1 then
+    raise exception 'RLS 검증 실패: A가 자기 기록의 코멘트를 못 봄';
+  end if;
+  if (select count(*) from public.profiles where role = 'coach') <> 1 then
+    raise exception 'RLS 검증 실패: 고객이 코치 이름을 못 봄';
+  end if;
+end $$;
+
+do $$
+begin
+  insert into public.coach_comments (daily_log_id, coach_id, body)
+  values ('30000000-0000-4000-a000-00000000000a', '00000000-0000-4000-a000-00000000000a', '셀프 코멘트');
+  raise exception 'RLS 검증 실패: 고객이 코멘트를 씀';
+exception when insufficient_privilege then null;
+end $$;
+
+do $$
+begin
+  insert into storage.objects (bucket_id, name) values ('content-images', 'ingredients/hack.jpg');
+  raise exception 'RLS 검증 실패: 고객이 콘텐츠 이미지를 올림';
+exception when insufficient_privilege then null;
+end $$;
+
+reset role;
+
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000b","role":"authenticated"}', true);
+set local role authenticated;
+
+do $$
+begin
+  if (select count(*) from public.coach_comments) <> 0 then
+    raise exception 'RLS 검증 실패: B가 A의 코멘트를 봄';
   end if;
 end $$;
 

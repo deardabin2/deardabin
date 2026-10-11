@@ -32,3 +32,8 @@ export function toDate(date: string): Date {
 export function toDateString(date: Date): string {
   return format(date, DATE_FORMAT);
 }
+
+/** timestamptz → "10월 11일 오후 3:20" (서울 기준) */
+export function formatInTimeZone(timestamp: string): string {
+  return format(new TZDate(new Date(timestamp), APP_TIME_ZONE), "M월 d일 a h:mm", { locale: ko });
+}

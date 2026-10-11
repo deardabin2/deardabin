@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { HEALTH_CONSENT_VERSION } from "@/lib/validations/consent";
 
@@ -39,5 +39,12 @@ export function hasValidConsent(profile: {
 export async function requireConsentedProfile() {
   const profile = await getProfile();
   if (!hasValidConsent(profile)) redirect("/onboarding/consent");
+  return profile;
+}
+
+/** 코치 전용 화면. 코치가 아니면 존재하지 않는 페이지처럼 보이게 한다 (데이터 권한은 RLS 가 따로 막음) */
+export async function requireCoach() {
+  const profile = await getProfile();
+  if (profile.role !== "coach") notFound();
   return profile;
 }

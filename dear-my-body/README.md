@@ -34,7 +34,9 @@ npm run dev                  # http://localhost:3000
 
 **방법 A. 대시보드에서 (가장 쉬움)**
 1. 대시보드 > SQL Editor > New query
-2. `supabase/migrations/20261011000000_init_schema.sql` 내용을 통째로 붙여넣고 Run
+2. `supabase/migrations/` 안의 파일을 **이름 순서대로** 하나씩 통째로 붙여넣고 Run
+   - `20261011000000_init_schema.sql` (기본 스키마)
+   - `20261012000000_coach_and_content.sql` (코치 코멘트, 콘텐츠 이미지 버킷)
 
 **방법 B. CLI로**
 ```bash
@@ -62,8 +64,13 @@ npm run db:push
 > Authentication > Emails > SMTP Settings 에서 자체 SMTP를 연결하세요.
 
 ### 2-4. Storage
-마이그레이션이 `meal-photos` **비공개** 버킷과 접근 정책을 만듭니다. 따로 할 일은 없습니다.
-(대시보드 > Storage 에 `meal-photos` 가 Private 으로 보이면 정상)
+마이그레이션이 버킷 두 개와 접근 정책을 만듭니다. 따로 할 일은 없습니다.
+- `meal-photos`: 식사 사진, **비공개** (서명 URL 로만 보여 줌)
+- `content-images`: 식재료·레시피 대표 이미지, 공개 (올리기·지우기는 코치만)
+
+### 2-5. 샘플 콘텐츠 (선택)
+`supabase/seed.sql` 을 SQL Editor 에서 한 번 실행하면 식재료 5개, 레시피 3개, 글 3개가 공개 상태로 들어갑니다.
+본문은 모두 `[영양사 검수 필요] 샘플 텍스트` 이니 코치 화면에서 고쳐 주세요. 두 번 실행하면 중복으로 들어갑니다.
 
 ## 3. 환경변수
 
@@ -87,6 +94,7 @@ update public.profiles set role = 'coach' where id = (select id from auth.users 
 ```
 
 고객은 자기 role 을 바꿀 수 없습니다 (DB 컬럼 권한으로 막혀 있음).
+코치는 로그인하면 `/admin` (코치 관리) 으로 이동합니다. 코치가 직접 기록도 하려면 고객 화면(`/today`)에서 건강정보 동의를 하면 됩니다.
 
 ## 5. RLS 검증
 
@@ -96,7 +104,8 @@ update public.profiles set role = 'coach' where id = (select id from auth.users 
 
 검증 항목: 다른 고객 기록/식사/행동 체크/목표/사진 조회·수정·삭제 차단, 남의 명의로 기록 생성 차단,
 남의 행동 목표 체크 차단, 고객의 role 변경 차단, 미동의 사용자의 기록·사진 업로드 차단,
-코치의 전체 조회 허용(수정은 차단), 비로그인(anon) 접근 차단, 고객의 콘텐츠 작성 차단.
+코치의 전체 조회 허용(수정은 차단), 비로그인(anon) 접근 차단, 고객의 콘텐츠 작성 차단,
+코치 코멘트(본인 기록의 코멘트만 보임, 고객은 작성 불가, 다른 사람 이름으로 작성 불가), 고객의 콘텐츠 이미지 업로드 차단.
 
 ## 6. 테스트·검사
 
@@ -134,7 +143,8 @@ app/
   (client)/history            기록 달력
   (client)/goals              목표 설정
   (client)/trends             추이 그래프 (2주/4주/전체)
-  (client)/library            Phase 3 에서 구현 (지금은 준비 중 화면)
+  (client)/library            식재료·레시피·기초지식 (공개 콘텐츠만)
+  (coach)/admin               코치 전용: 고객 기록·추이·코멘트, 콘텐츠 관리
   auth/confirm                가입 확인 메일 링크 처리
   onboarding/consent          건강정보(민감정보) 별도 동의
 components/ui                 버튼·입력 등 기본 컴포넌트 (shadcn/ui 형식)
@@ -143,6 +153,7 @@ lib/supabase                  브라우저·서버·proxy 용 Supabase 클라이
 lib/validations               zod 스키마
 lib/trends.ts                 이동평균·달성률 계산 (단위 테스트 있음)
 supabase/migrations           DB 스키마 + RLS + Storage 정책
+supabase/seed.sql             샘플 콘텐츠
 supabase/tests/rls_check.sql  RLS 검증 스크립트
 types/database.types.ts       Supabase CLI 로 생성한 타입
 proxy.ts                      세션 갱신 + 비로그인 접근 시 로그인 화면으로

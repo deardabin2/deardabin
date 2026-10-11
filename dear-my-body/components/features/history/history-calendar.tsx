@@ -10,10 +10,17 @@ export function HistoryCalendar({
   month,
   today,
   recordedDates,
+  dayHref = (date) => (date === today ? "/today" : `/today?date=${date}`),
+  monthHref = (m) => `/history?month=${m}`,
+  title,
 }: {
   month: string;
   today: string;
   recordedDates: string[];
+  /** 서버 컴포넌트에서만 쓰므로 함수 prop 을 받을 수 있다 */
+  dayHref?: (date: string) => string;
+  monthHref?: (month: string) => string;
+  title?: string;
 }) {
   const recorded = new Set(recordedDates);
   const cells = monthGrid(month);
@@ -24,11 +31,12 @@ export function HistoryCalendar({
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <Button asChild variant="ghost" size="icon">
-          <Link href={`/history?month=${shiftMonth(month, -1)}`} aria-label="이전 달">
+          <Link href={monthHref(shiftMonth(month, -1))} aria-label="이전 달">
             <ChevronLeft aria-hidden />
           </Link>
         </Button>
         <h1 className="text-lg font-semibold">
+          {title ? <span className="sr-only">{title} </span> : null}
           {year}년 {monthNumber}월
         </h1>
         {isCurrentMonth ? (
@@ -37,7 +45,7 @@ export function HistoryCalendar({
           </Button>
         ) : (
           <Button asChild variant="ghost" size="icon">
-            <Link href={`/history?month=${shiftMonth(month, 1)}`} aria-label="다음 달">
+            <Link href={monthHref(shiftMonth(month, 1))} aria-label="다음 달">
               <ChevronRight aria-hidden />
             </Link>
           </Button>
@@ -80,7 +88,7 @@ export function HistoryCalendar({
           return (
             <Link
               key={date}
-              href={isToday ? "/today" : `/today?date=${date}`}
+              href={dayHref(date)}
               aria-label={label}
               className={cn(
                 "flex aspect-square min-h-11 flex-col items-center justify-center gap-0.5 rounded-lg text-sm transition-colors",

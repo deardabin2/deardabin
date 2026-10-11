@@ -128,6 +128,49 @@ export type Database = {
           },
         ];
       };
+      coach_comments: {
+        Row: {
+          body: string;
+          coach_id: string | null;
+          created_at: string;
+          daily_log_id: string;
+          id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          body: string;
+          coach_id?: string | null;
+          created_at?: string;
+          daily_log_id: string;
+          id?: string;
+          updated_at?: string;
+        };
+        Update: {
+          body?: string;
+          coach_id?: string | null;
+          created_at?: string;
+          daily_log_id?: string;
+          id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "coach_comments_coach_id_fkey";
+            columns: ["coach_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "coach_comments_daily_log_id_fkey";
+            columns: ["daily_log_id"];
+            isOneToOne: false;
+            referencedRelation: "daily_logs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       daily_logs: {
         Row: {
           created_at: string;

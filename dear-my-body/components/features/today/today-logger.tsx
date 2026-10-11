@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { MEAL_TYPES, type DailyLogPatch, type MealType } from "@/lib/validations/daily-log";
+import { CoachComments } from "@/components/features/coach-comments";
 import { BehaviorChecklist } from "./behavior-checklist";
 import { DateNav } from "./date-nav";
 import { MealCard } from "./meal-card";
@@ -123,6 +124,8 @@ export function TodayLogger({ data }: { data: TodayData }) {
           기록 달력
         </Link>
       </div>
+
+      <CoachComments comments={data.coachComments} />
 
       <section aria-labelledby="meals-heading" className="flex flex-col gap-3">
         <h2 id="meals-heading" className="text-base font-semibold">

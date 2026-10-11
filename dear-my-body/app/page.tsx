@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
+import { getProfile } from "@/lib/auth";
 
-export default function Home() {
-  redirect("/today");
+export default async function Home() {
+  const profile = await getProfile();
+  redirect(profile.role === "coach" ? "/admin" : "/today");
 }

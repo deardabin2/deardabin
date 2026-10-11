@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "건강정보 동의" };
 
 export default async function ConsentPage() {
   const profile = await getProfile();
-  if (hasValidConsent(profile)) redirect("/today");
+  if (hasValidConsent(profile)) redirect("/");
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-5 py-10">
